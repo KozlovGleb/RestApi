@@ -2,6 +2,7 @@
 using RestApi.DataAccess;
 using RestApi.DataAccess.Entities;
 using RestApi.Service.Interfaces;
+using RestApi.Services.Helpers;
 using System.Threading.Tasks;
 
 namespace RestApi.Controllers
@@ -21,6 +22,7 @@ namespace RestApi.Controllers
 
 
         // GET: api/Entities/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Entity>> GetEntity(int id)
         {
@@ -36,6 +38,7 @@ namespace RestApi.Controllers
 
         // PUT: api/Entities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEntity(int id, Entity entity)
         {
@@ -45,6 +48,7 @@ namespace RestApi.Controllers
 
         // POST: api/Entities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Entity>> PostEntity(Entity entity)
         {
@@ -52,6 +56,7 @@ namespace RestApi.Controllers
         }
 
         // DELETE: api/Entities/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEntity(int id)
         {
