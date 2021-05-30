@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestApi.DataAccess.DTOs;
+using RestApi.DataAccess.Entities;
 using RestApi.DataAccess.Request;
 using RestApi.Services.Helpers;
 using RestApi.Services.Interfaces;
@@ -31,6 +33,11 @@ namespace RestApi.Controllers
 
             return Ok(response);
         }
-
+        [HttpPost("registration")]
+        public async Task<IActionResult> UserRegistrationAsync([FromQuery] UserDTO user)
+        {
+            await _userService.AddUserAsync(user);
+            return Ok();//Добавить нормальные ошибки
+        }
     }
 }

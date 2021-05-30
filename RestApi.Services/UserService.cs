@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using RestApi.DataAccess;
+using RestApi.DataAccess.DTOs;
 using RestApi.DataAccess.Entities;
 using RestApi.DataAccess.Request;
 using RestApi.DataAccess.Response;
@@ -17,31 +19,42 @@ namespace RestApi.Services
 {
     public class UserService: IUserService
     {
-        private List<User> _users = new List<User>
-        {
-            new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" }
-        };
+       
         private readonly AppSettings _appSettings;
+        private readonly DataContext _dataContext;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(IOptions<AppSettings> appSettings,DataContext dataContext)
         {
             _appSettings = appSettings.Value;
+            _dataContext = dataContext;
+        }
+        public async Task AddUserAsync(UserDTO userDTO)
+        {
+            //User user = new User(id, firstName,lastName,username,password);
+            User user = new User();
+            user.Id = userDTO.Id;
+            user.FirstName = userDTO.FirstName;
+            user.LastName = userDTO.LastName;
+            user.Username = userDTO.Username;
+            user.Password = userDTO.Password;
+            await _dataContext.Users.AddAsync(user);
+            await _dataContext.SaveChangesAsync();
         }
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            var user = _dataContext.Users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
             if (user == null) return null;
             var token = generateJwtToken(user);
             return new AuthenticateResponse(user, token);
         }
         public IEnumerable<User> GetAll()
         {
-            return _users;
+            return _dataContext.Users;
         }
 
         public User GetById(int id)
         {
-            return _users.FirstOrDefault(x => x.Id == id);
+            return _dataContext.Users.FirstOrDefault(x => x.Id == id);
         }
         #region Private helpers
         private string generateJwtToken(User user)

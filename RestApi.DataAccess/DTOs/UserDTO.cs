@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace RestApi.DataAccess.Entities
+namespace RestApi.DataAccess.DTOs
 {
-    public class User
+    public class UserDTO
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -15,6 +15,5 @@ namespace RestApi.DataAccess.Entities
         public string Username { get; set; }
         [JsonIgnore]
         public string Password { get; set; }
-        public List<Entity> Entities { get; set; }
     }
 }

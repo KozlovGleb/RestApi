@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RestApi.DataAccess;
@@ -9,9 +10,10 @@ using RestApi.DataAccess;
 namespace RestApi.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210530075750_1tm2")]
+    partial class _1tm2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,9 +70,11 @@ namespace RestApi.DataAccess.Migrations
 
             modelBuilder.Entity("RestApi.DataAccess.Entities.Entity", b =>
                 {
-                    b.HasOne("RestApi.DataAccess.Entities.User", null)
+                    b.HasOne("RestApi.DataAccess.Entities.User", "User")
                         .WithMany("Entities")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RestApi.DataAccess.Entities.User", b =>

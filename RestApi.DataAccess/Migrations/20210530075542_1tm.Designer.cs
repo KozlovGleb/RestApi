@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RestApi.DataAccess;
@@ -9,9 +10,10 @@ using RestApi.DataAccess;
 namespace RestApi.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210530075542_1tm")]
+    partial class _1tm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,12 +34,7 @@ namespace RestApi.DataAccess.Migrations
                     b.Property<string>("ToDo")
                         .HasColumnType("text");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Entities");
                 });
@@ -64,18 +61,6 @@ namespace RestApi.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("RestApi.DataAccess.Entities.Entity", b =>
-                {
-                    b.HasOne("RestApi.DataAccess.Entities.User", null)
-                        .WithMany("Entities")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("RestApi.DataAccess.Entities.User", b =>
-                {
-                    b.Navigation("Entities");
                 });
 #pragma warning restore 612, 618
         }

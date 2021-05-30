@@ -1,4 +1,5 @@
-﻿using RestApi.DataAccess.Entities;
+﻿using RestApi.DataAccess.DTOs;
+using RestApi.DataAccess.Entities;
 using RestApi.DataAccess.Request;
 using RestApi.DataAccess.Response;
 using System;
@@ -14,5 +15,6 @@ namespace RestApi.Services.Interfaces
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         IEnumerable<User> GetAll();
         User GetById(int id);
+        Task AddUserAsync(UserDTO user);
     }
 }
