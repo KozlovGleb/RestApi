@@ -1,6 +1,9 @@
-﻿using RestApi.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using RestApi.DataAccess;
 using RestApi.DataAccess.Entities;
 using RestApi.Service.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RestApi.Service
@@ -15,33 +18,37 @@ namespace RestApi.Service
         #region public CRUD
         public async Task<Entity> GetTaskAsync(int TaskId)
         {
-            return await FindTaskById(TaskId);
+            return await _dataContext.Entities.FindAsync(TaskId);
+        }
+        public  async Task<IEnumerable<Entity>> GetAllTasksByUser(int id)
+        {
+            return await FindTasksById(id);
         }
         public async Task<Entity> UpdateTaskAsync(int id, Entity Task)
         {
-            var task = await FindTaskById(id);
+            var task = await _dataContext.Entities.FindAsync(id);
             _dataContext.Entry(task).CurrentValues.SetValues(Task);
             await _dataContext.SaveChangesAsync();
-            return await FindTaskById(id);//вот тут наверное можно покрасивше
+            return await _dataContext.Entities.FindAsync(id);//вот тут наверное можно покрасивше
         }
         public async Task<Entity> PostTaskAsync(Entity Task)
         {
             await _dataContext.Entities.AddAsync(Task);
             await _dataContext.SaveChangesAsync();
-            return await FindTaskById(Task.Id);
+            return await _dataContext.Entities.FindAsync(Task.Id);
         }
         public async Task DeleteTaskAsync(int id)
         {
-            var task = await FindTaskById(id);
+            var task = await _dataContext.Entities.FindAsync(id);
             _dataContext.Entities.Remove(task);
             await _dataContext.SaveChangesAsync();
         }
 
         #endregion
         #region private CRUD
-        private async Task<Entity> FindTaskById(int Id)
+        private async Task<IEnumerable<Entity>> FindTasksById(int Id)
         {
-            return await _dataContext.Entities.FindAsync(Id);
+            return  await _dataContext.Entities.Where(b => b.UserId == Id).ToListAsync();
         }
 
 

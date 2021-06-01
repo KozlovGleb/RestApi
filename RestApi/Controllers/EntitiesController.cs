@@ -3,6 +3,10 @@ using RestApi.DataAccess;
 using RestApi.DataAccess.Entities;
 using RestApi.Service.Interfaces;
 using RestApi.Services.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RestApi.Controllers
@@ -24,13 +28,18 @@ namespace RestApi.Controllers
         // GET: api/Entities/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Entity>> GetEntity(int id)
+        public async Task<IEnumerable<Entity>> GetEntity()
         {
-            var entity = await _taskService.GetTaskAsync(id);
+            //var ii = ClaimTypes.NameIdentifier;
+            var user = (User)HttpContext.Items["User"];
+            //var user1 = HttpContext.User.FindFirst("id")?.Value;
+            //var userClaims = HttpContext.User;
+            //var id = userClaims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var entity = await _taskService.GetAllTasksByUser(user.Id);
 
             if (entity == null)
             {
-                return NotFound();
+                return null;
             }
 
             return entity;
