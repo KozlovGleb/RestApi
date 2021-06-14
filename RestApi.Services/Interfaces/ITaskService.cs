@@ -8,7 +8,7 @@ namespace RestApi.Service.Interfaces
     {
         Task<Entity> GetTaskAsync(int TaskId);
         Task<Entity> UpdateTaskAsync(int id, Entity Task);
-        Task<Entity> PostTaskAsync(Entity Task);
+        Task<Entity> PostTaskAsync(Entity Task, int userId);
         Task DeleteTaskAsync(int id);
         Task<IEnumerable<Entity>> GetAllTasksByUser(int id);
     }

@@ -4,7 +4,6 @@ using RestApi.DataAccess;
 using RestApi.DataAccess.DTOs;
 using RestApi.DataAccess.Entities;
 using RestApi.DataAccess.Request;
-using RestApi.DataAccess.Response;
 using RestApi.Services.Helpers;
 using RestApi.Services.Interfaces;
 using System;
@@ -17,21 +16,20 @@ using System.Threading.Tasks;
 
 namespace RestApi.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
-       
+
         private readonly AppSettings _appSettings;
         private readonly DataContext _dataContext;
 
-        public UserService(IOptions<AppSettings> appSettings,DataContext dataContext)
+        public UserService(IOptions<AppSettings> appSettings, DataContext dataContext)
         {
             _appSettings = appSettings.Value;
             _dataContext = dataContext;
         }
         public async Task AddUserAsync(UserDTO userDTO)
         {
-            //User user = new User(id, firstName,lastName,username,password);
-            User user = new User();
+            User user = new();
             user.Id = userDTO.Id;
             user.FirstName = userDTO.FirstName;
             user.LastName = userDTO.LastName;
@@ -40,12 +38,12 @@ namespace RestApi.Services
             await _dataContext.Users.AddAsync(user);
             await _dataContext.SaveChangesAsync();
         }
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        public string Authenticate(AuthenticateRequest model)
         {
             var user = _dataContext.Users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
             if (user == null) return null;
             var token = generateJwtToken(user);
-            return new AuthenticateResponse(user, token);
+            return token;
         }
         public IEnumerable<User> GetAll()
         {

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RestApi.DataAccess;
 using RestApi.DataAccess.Entities;
 using RestApi.Service.Interfaces;
-using RestApi.Services.Helpers;
-using System;
+//using RestApi.Services.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -27,15 +27,13 @@ namespace RestApi.Controllers
 
         // GET: api/Entities/5
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<IEnumerable<Entity>> GetEntity()
         {
-            //var ii = ClaimTypes.NameIdentifier;
-            var user = (User)HttpContext.Items["User"];
-            //var user1 = HttpContext.User.FindFirst("id")?.Value;
-            //var userClaims = HttpContext.User;
-            //var id = userClaims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var entity = await _taskService.GetAllTasksByUser(user.Id);
+
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var entity = await _taskService.GetAllTasksByUser(userId);
 
             if (entity == null)
             {
@@ -59,9 +57,11 @@ namespace RestApi.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Entity>> PostEntity(Entity entity)
+        public async Task<ActionResult> PostEntity(Entity entity)
         {
-            return await _taskService.PostTaskAsync(entity);
+            var userId = GetUserId(); //не знаю насколько это хорошая практика
+            await _taskService.PostTaskAsync(entity, userId);
+            return Ok();
         }
 
         // DELETE: api/Entities/5
@@ -72,6 +72,10 @@ namespace RestApi.Controllers
             await _taskService.DeleteTaskAsync(id);
 
             return NoContent();
+        }
+        protected int GetUserId()
+        {
+            return int.Parse(this.User.Claims.First().Value);
         }
 
     }

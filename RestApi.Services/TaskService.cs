@@ -20,21 +20,27 @@ namespace RestApi.Service
         {
             return await _dataContext.Entities.FindAsync(TaskId);
         }
-        public  async Task<IEnumerable<Entity>> GetAllTasksByUser(int id)
+        public async Task<IEnumerable<Entity>> GetAllTasksByUser(int id)
         {
             return await FindTasksById(id);
         }
         public async Task<Entity> UpdateTaskAsync(int id, Entity Task)
         {
             var task = await _dataContext.Entities.FindAsync(id);
+
             _dataContext.Entry(task).CurrentValues.SetValues(Task);
+
             await _dataContext.SaveChangesAsync();
+
             return await _dataContext.Entities.FindAsync(id);//вот тут наверное можно покрасивше
         }
-        public async Task<Entity> PostTaskAsync(Entity Task)
+        public async Task<Entity> PostTaskAsync(Entity Task, int userId)
         {
+            Task.UserId = userId;
             await _dataContext.Entities.AddAsync(Task);
+
             await _dataContext.SaveChangesAsync();
+
             return await _dataContext.Entities.FindAsync(Task.Id);
         }
         public async Task DeleteTaskAsync(int id)
@@ -48,7 +54,7 @@ namespace RestApi.Service
         #region private CRUD
         private async Task<IEnumerable<Entity>> FindTasksById(int Id)
         {
-            return  await _dataContext.Entities.Where(b => b.UserId == Id).ToListAsync();
+            return await _dataContext.Entities.Where(b => b.UserId == Id).ToListAsync();
         }
 
 
